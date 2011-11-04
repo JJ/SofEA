@@ -1,1 +1,1 @@
-{"_id":"_design/docs","_rev":"7-7e12acbf683439735c5c71250c9c2ee9","language":"javascript","views":{"count":{"map":"function(doc) {\n  emit(doc._id, 1);\n}","reduce":"function(keys, values) {\n\treturn sum(values);\n}"}}}
+{"language":"javascript","views":{"count":{"map":"function(doc) {\n  emit(doc._id, 1);\n}","reduce":"function(keys, values) {\n\treturn sum(values);\n}"}}}
