@@ -7,7 +7,7 @@ use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib )
 
 use YAML qw(LoadFile Dump); 
 use CouchDB::Client;
-use Algorithm::Evolutionary::Simple qw(random_chromosome max_ones);
+use Algorithm::Evolutionary::Simple qw(random_chromosome max_ones get_pool_roulette_wheel produce_offspring );
 use JSON qw(encode_json);
 use LWP::UserAgent;
 
@@ -26,30 +26,25 @@ print "Connected to $conf->{'couchdb'}\n";
 
 my $population_size = shift || 32;
 my $doc = $db->newDesignDoc('_design/rev')->retrieve;
-my $view = $doc->queryView( "rev1", limit=> $population_size );
+my $view = $doc->queryView( "rev2", limit=> $population_size );
 
-my $docs = { docs => []};
+my @population;
+my %fitness_of;
 for my $p ( @{$view->{'rows'}} ) {
-  push @{$docs->{'docs'}}, { _id => $p->{'value'}{'_id'}, 
-			     _rev => $p->{'value'}{'_rev'},
-			     fitness => max_ones( $p->{'value'}{'str'})};
+  push( @population, $p->{'id'});
+  $fitness_of{ $p->{'id'} } =  $p->{'value'}{'fitness'};
 }
 
- my $ua = LWP::UserAgent->new;
-$ua->agent("MyApp/0.1 ");
-my $req = HTTP::Request->new(POST => "$conf->{'couchurl'}/$conf->{'couchdb'}/_bulk_docs");
-$req->content_type('application/json');
-$req->content(encode_json($docs));
-# Pass request to the user agent and get a response back
-my $res = $ua->request($req);
+my @pool = get_pool_roulette_wheel( \@population, \%fitness_of, $population_size );
+my @new_population  = produce_offspring( \@pool, $population_size );
 
-# Check the outcome of the response
-if ($res->is_success) {
-  print $res->content;
-}
-else {
-  print $res->status_line, "\n";
-}
+my @new_docs = map(  $db->newDoc($_, undef, { str => $_, 
+					      rnd => rand() } ), @new_population );
+
+my $response = $db->bulkStore( \@new_docs );
+
+print encode_json( $response );
+
 
 
 
