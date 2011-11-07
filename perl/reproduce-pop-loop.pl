@@ -7,13 +7,14 @@ use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib )
 
 use YAML qw(LoadFile Dump); 
 use CouchDB::Client;
+use Algorithm::Evolutionary::Simple qw(random_chromosome max_ones get_pool_roulette_wheel produce_offspring );
 use JSON qw(encode_json);
+use LWP::UserAgent;
 
 my $conf = LoadFile('conf.yaml') || die "No puedo cargar la configuracion : $!\n";
 my $c = CouchDB::Client->new(uri => $conf->{'couchurl'});
 $c->testConnection or die "The server cannot be reached";
 print "Running version " . $c->serverInfo->{version} . "\n";
-
 my $db;
 eval {
   $db = $c->newDB($conf->{'couchdb'})->create;
@@ -23,7 +24,7 @@ if ( $@ ) {
 }
 print "Connected to $conf->{'couchdb'}\n";
 
-my $population_size = shift || 128;
+my $population_size = shift || 32;
 my $max_evaluations = shift || 10000;
 
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
@@ -32,23 +33,32 @@ my $sleep = shift || 10;
 my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
 while ( $evals_so_far < $max_evaluations ) {
   my $view = $rev->queryView( "rev2", limit=> $population_size );
-  my $by = $db->newDesignDoc('_design/by')->retrieve;
-  my $by_fitness = $by->queryView( "fitness" );
 
-  my @graveyard;
-  my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
-  if ( $all_of_them < $population_size ) {
-    sleep 1;
+  my @population;
+  my %fitness_of;
+  if ( !@{$view->{'rows'}}  )  {
+    sleep $sleep;
     next;
   }
-  for ( my $r = 0; $r < $all_of_them - $population_size; $r++ ) {
-    my $will_die = shift @{$by_fitness->{'rows'}};
-    push @graveyard, $db->newDoc( $will_die->{'id'}, $will_die->{'value'}{'_rev'}, $will_die->{'value'}) ; #deleted
+
+  for my $p ( @{$view->{'rows'}} ) {
+    push( @population, $p->{'id'});
+    $fitness_of{ $p->{'id'} } =  $p->{'value'}{'fitness'};
   }
-  my $response = $db->bulkStore( \@graveyard );
+
+  my @pool = get_pool_roulette_wheel( \@population, \%fitness_of, $population_size );
+  my @new_population  = produce_offspring( \@pool, $population_size );
+  
+  my @new_docs = map(  $db->newDoc($_, undef, { str => $_, 
+						rnd => rand() } ), @new_population );
+  
+  my $response = $db->bulkStore( \@new_docs );
+  my $conflicts = 0; 
+  map( (defined $_->{'error'})?$conflicts++:undef, @$response );
   $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
-  print "Deleted ".scalar(@$response)." chromosomes \n";
+  print "Evaluations so far: $evals_so_far; conflicts $conflicts\n"; 
 }
 
-print "\n\tFinished after $evals_so_far evaluations\n";
+
+#-----------------------------
 
