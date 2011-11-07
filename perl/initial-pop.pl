@@ -34,10 +34,12 @@ EOC
 my @population = map( random_chromosome( $chromosome_length ), 
 		      1..$population_size );
 
+my @docs;
 for my $p (@population) {
-  next  if ( $db->docExists( $p ) ) ;
   my $sofa_doc = { str => $p,
 		   rnd => rand() };
-  my $doc = $db->newDoc( $p, undef, $sofa_doc )->create;
-  print "Inserted with id $p\n";
+  push @docs, $db->newDoc( $p, undef, $sofa_doc );
 }
+
+my $response = $db->bulkStore( \@docs );
+print "Inserted ".scalar(@$response)." chromosomes \n";

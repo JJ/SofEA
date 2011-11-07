@@ -30,14 +30,19 @@ my $doc = $db->newDesignDoc('_design/rev')->retrieve;
 my $view = $doc->queryView( "rev1", startkey => 0,
 			      limit=> $population_size );
 
+my $best_so_far = { fitness => 0}; # Dummy for comparisons
 while (  @{$view->{'rows'}} ) {
  
   my @updated_docs;
   for my $p ( @{$view->{'rows'}} ) {
-    push @updated_docs, 
-      $db->newDoc( $p->{'value'}{'_id'},
-		   $p->{'value'}{'_rev'}, 
-		   { fitness => max_ones( $p->{'value'}{'str'})} );
+    my $new_guy = $db->newDoc( $p->{'value'}{'_id'},
+			       $p->{'value'}{'_rev'}, 
+			       { fitness => max_ones( $p->{'value'}{'str'})} );
+    push @updated_docs, $new_guy;
+    if ( $new_guy->{'fitness'} > $best_so_far->{'fitness'} ) {
+      $best_so_far = $new_guy;
+    }
+    
   }
   my $response = $db->bulkStore( \@updated_docs );
   
