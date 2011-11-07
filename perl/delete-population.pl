@@ -26,28 +26,16 @@ print "Connected to $conf->{'couchdb'}\n";
 
 my $population_size = shift || 32;
 
-my $doc = $db->newDesignDoc('_design/rev')->retrieve;
-my $view = $doc->queryView( "rev1", startkey => 0,
-			      limit=> $population_size );
-
-while (  @{$view->{'rows'}} ) {
- 
-  my @updated_docs;
-  for my $p ( @{$view->{'rows'}} ) {
-    push @updated_docs, 
-      $db->newDoc( $p->{'value'}{'_id'},
-		   $p->{'value'}{'_rev'}, 
-		   { fitness => max_ones( $p->{'value'}{'str'})} );
+my $view = $db->listDocs();
+my @all_docs;
+for my $p ( @{$view} ) {
+  if ( $p->{'id'} !~ /_design/ ) {
+    push @all_docs, $p;
   }
-  my $response = $db->bulkStore( \@updated_docs );
-  
-#  print encode_json( $response );
-  
-  $view = $doc->queryView( "rev1", startkey => 0,
-			   limit=> $population_size );
+}
 
-} 
-
+my $response = $db->bulkDelete( \@all_docs );
+ 
 
 
 
