@@ -58,7 +58,7 @@ while ( $evals_so_far < $max_evaluations ) {
   $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
   print "Evaluations so far: $evals_so_far; conflicts $conflicts\n"; 
 }
-
+print "\n\tFinished after $evals_so_far evaluations\n";
 
 #-----------------------------
 
