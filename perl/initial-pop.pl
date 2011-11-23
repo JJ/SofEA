@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib );
+use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib /home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib );
 
 use YAML qw(LoadFile Dump); 
 use CouchDB::Client;

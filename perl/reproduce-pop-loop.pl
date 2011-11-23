@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 
-use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib );
+use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib/ 
+/home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib  );
 
 use YAML qw(LoadFile Dump); 
 use CouchDB::Client;
@@ -32,7 +33,9 @@ my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = shift || 10;
 my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
 while ( $evals_so_far < $max_evaluations ) {
-  my $view = $rev->queryView( "rev2", limit=> $population_size );
+  my $view = $rev->queryView( "rev2", 
+			      startkey=> rand(),
+			      limit=> $population_size );
 
   my @population;
   my %fitness_of;

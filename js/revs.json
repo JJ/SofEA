@@ -2,10 +2,10 @@
     "language": "javascript",
    "views": {
        "rev1": {
-           "map": " function(doc) {\n      var rev = doc._rev.split(\"-\");\n\tif ( rev[0] == '1' ) \n      \t\temit( doc._id, doc);\t\n    }"
+           "map": " function(doc) {\n      var rev = doc._rev.split(\"-\");\n\tif ( rev[0] == '1' ) \n      \t\temit( doc.rnd, doc);\t\n    }"
        },
        "rev2": {
-           "map": " function(doc) {\n      var rev = doc._rev.split(\"-\");\n\tif ( rev[0] == '2' ) \n      \t\temit( doc._id, doc);\t\n    }"
+           "map": " function(doc) {\n      var rev = doc._rev.split(\"-\");\n\tif ( rev[0] == '2' ) \n      \t\temit( doc.rnd, doc);\t\n    }"
        }
    }
 }
