@@ -4,8 +4,5 @@
        "fitness": {
            "map": "function(doc) {\n    var rev = doc._rev.split(\"-\");\n    if (  (rev[0] == '2') && ('fitness' in doc)  ) \n      \temit( doc.fitness, doc);\t\n}"
        }
-       "rnd": {
-           "map": "function(doc) {\n  emit(doc.rnd, doc);\n}"
-       }
    }
 }
