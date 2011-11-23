@@ -3,28 +3,23 @@
 use strict;
 use warnings;
 
-use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib /home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib );
+use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib
+	   /home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib );
 
 use YAML qw(LoadFile Dump); 
 use CouchDB::Client;
 use Algorithm::Evolutionary::Simple qw(random_chromosome);
+use My::Couch;
 
-my $conf = LoadFile('conf.yaml') || die "No puedo cargar la configuracion : $!\n";
-my $c = CouchDB::Client->new(uri => $conf->{'couchurl'});
-$c->testConnection or die "The server cannot be reached";
-print "Running version " . $c->serverInfo->{version} . "\n";
-my $db;
-eval {
-  $db = $c->newDB($conf->{'couchdb'})->create;
-};
-if ( $@ ) {
-  $db = $c->newDB($conf->{'couchdb'});
-}
-print "Connected to $conf->{'couchdb'}\n";
+my $cdb_conff = shift || 'conf';
+my $c = new My::Couch( "$cdb_conff.yaml" ) || die "Can't load: $@\n";
+my $db = $c->db;
 
+my $sofea_conff = shift || 'base';
+my $sofea_conf = LoadFile("$sofea_conff.yaml") || die "Can't load $sofea_conff: $!\n";
 
-my $chromosome_length = shift || 16;
-my $population_size = shift || 32;
+my $chromosome_length =$sofea_conf->{'chromosome_length'}; ;
+my $population_size = $sofea_conf->{'initial_population'};
 
 print<<EOC;
 CL $chromosome_length

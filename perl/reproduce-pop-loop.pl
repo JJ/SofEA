@@ -3,34 +3,31 @@
 use strict;
 use warnings;
 
-use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib/ 
+use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib/  
+	   /home/jmerelo/progs/logyaml/trunk/Log-YAMLLogger/lib 
 /home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib  );
 
 use YAML qw(LoadFile Dump); 
-use CouchDB::Client;
+use Log::YAMLLogger;
 use Algorithm::Evolutionary::Simple qw(random_chromosome max_ones get_pool_roulette_wheel produce_offspring );
-use JSON qw(encode_json);
-use LWP::UserAgent;
+use My::Couch;
 
-my $conf = LoadFile('conf.yaml') || die "No puedo cargar la configuracion : $!\n";
-my $c = CouchDB::Client->new(uri => $conf->{'couchurl'});
-$c->testConnection or die "The server cannot be reached";
-print "Running version " . $c->serverInfo->{version} . "\n";
-my $db;
-eval {
-  $db = $c->newDB($conf->{'couchdb'})->create;
-};
-if ( $@ ) {
-  $db = $c->newDB($conf->{'couchdb'});
-}
-print "Connected to $conf->{'couchdb'}\n";
+my $cdb_conf_file = shift || 'conf';
+my $c = new My::Couch( "$cdb_conf_file.yaml" ) || die "Can't load: $@\n";
+my $db = $c->db;
 
-my $population_size = shift || 32;
-my $max_evaluations = shift || 10000;
+my $sofea_conf_file = shift || 'base';
+my $sofea_conf = LoadFile("$sofea_conf_file.yaml") || die "Can't load $sofea_conf_file: $!\n";
+$sofea_conf ->{'id'} = "repro-".$sofea_conf ->{'id'};
+
+my $logger = new Log::YAMLLogger $sofea_conf;
+
+my $population_size = $sofea_conf->{'repro_pop_size'};
+my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
-my $sleep = shift || 10;
+my $sleep = shift || 1;
 my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
 while ( $evals_so_far < $max_evaluations ) {
   my $view = $rev->queryView( "rev2", 
@@ -59,9 +56,11 @@ while ( $evals_so_far < $max_evaluations ) {
   my $conflicts = 0; 
   map( (defined $_->{'error'})?$conflicts++:undef, @$response );
   $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
-  print "Evaluations so far: $evals_so_far; conflicts $conflicts\n"; 
+  $logger->log( { Evaluations => $evals_so_far,
+		  conflicts => $conflicts} ); 
 }
-print "\n\tFinished after $evals_so_far evaluations\n";
+$logger->log( {Finished => $evals_so_far}, 1);
+$logger->close;
 
 #-----------------------------
 

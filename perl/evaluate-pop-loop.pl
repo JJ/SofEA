@@ -4,29 +4,27 @@ use strict;
 use warnings;
 
 use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib 
+	   /home/jmerelo/progs/logyaml/trunk/Log-YAMLLogger/lib 
 	   /home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib );
 
 use YAML qw(LoadFile Dump); 
-use CouchDB::Client;
+use Log::YAMLLogger;
 use Algorithm::Evolutionary::Simple qw(random_chromosome max_ones);
-use JSON qw(encode_json);
-use LWP::UserAgent;
+#use JSON qw(encode_json);
+use My::Couch;
 
-my $conf = LoadFile('conf.yaml') || die "No puedo cargar la configuracion : $!\n";
-my $c = CouchDB::Client->new(uri => $conf->{'couchurl'});
-$c->testConnection or die "The server cannot be reached";
-print "Running version " . $c->serverInfo->{version} . "\n";
-my $db;
-eval {
-  $db = $c->newDB($conf->{'couchdb'})->create;
-};
-if ( $@ ) {
-  $db = $c->newDB($conf->{'couchdb'});
-}
-print "Connected to $conf->{'couchdb'}\n";
+my $cdb_conf_file = shift || 'conf';
+my $c = new My::Couch( "$cdb_conf_file.yaml" ) || die "Can't load: $@\n";
+my $db = $c->db;
 
-my $population_size = shift || 32;
-my $max_evaluations = shift || 10000;
+my $sofea_conf_file = shift || 'base';
+my $sofea_conf = LoadFile("$sofea_conf_file.yaml") || die "Can't load $sofea_conf_file: $!\n";
+$sofea_conf ->{'id'} = "eval-".$sofea_conf ->{'id'};
+
+my $logger = new Log::YAMLLogger $sofea_conf;
+
+my $population_size = $sofea_conf->{'eval_pop_size'};
+my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $doc = $db->newDesignDoc('_design/rev')->retrieve;
 my $view = $doc->queryView( "rev1", startkey => rand(),
@@ -51,15 +49,14 @@ while ( $evals_so_far < $max_evaluations ) {
     
   }
   my $response = $db->bulkStore( \@updated_docs );
-  print "Evaluated ".scalar(@$response)
-    ." chromosomes; best so far $best_so_far->{'id'} => $best_so_far->{'data'}{'fitness'} \n";
-  #  print encode_json( $response );
-  
+  $logger->log( { Evaluated  => scalar(@$response),
+		Best =>  $best_so_far->{'id'},
+		Fitness => $best_so_far->{'data'}{'fitness'} } );
   $view = $doc->queryView( "rev1", startkey => rand(),
 			   limit=> $population_size );
   if (  !@{$view->{'rows'}} ) {
     sleep 1;
-    print "Sleeping \n";
+    $logger->log( "Sleeping" );
     $view = $doc->queryView( "rev1", startkey => 0,
 			     limit=> $population_size ); # What a hack
     next;
@@ -67,7 +64,8 @@ while ( $evals_so_far < $max_evaluations ) {
   $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
 } 
 
-print "\n\tFinished after $evals_so_far evaluations\n";
+$logger->log( {Finished => $evals_so_far} );
+$logger->close;
 
 
 #-----------------------------

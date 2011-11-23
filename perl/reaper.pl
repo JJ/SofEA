@@ -4,28 +4,25 @@ use strict;
 use warnings;
 
 use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib
+	   /home/jmerelo/progs/logyaml/trunk/Log-YAMLLogger/lib 
  /home/jmerelo/progs/SimplEA/Algorithm-Evolutionary-Simple/lib);
 
 use YAML qw(LoadFile Dump); 
-use CouchDB::Client;
-use JSON qw(encode_json);
+use Log::YAMLLogger;
+use My::Couch;
 
-my $conf = LoadFile('conf.yaml') || die "No puedo cargar la configuracion : $!\n";
-my $c = CouchDB::Client->new(uri => $conf->{'couchurl'});
-$c->testConnection or die "The server cannot be reached";
-print "Running version " . $c->serverInfo->{version} . "\n";
+my $cdb_conf_file = shift || 'conf';
+my $c = new My::Couch( "$cdb_conf_file.yaml" ) || die "Can't load: $@\n";
+my $db = $c->db;
 
-my $db;
-eval {
-  $db = $c->newDB($conf->{'couchdb'})->create;
-};
-if ( $@ ) {
-  $db = $c->newDB($conf->{'couchdb'});
-}
-print "Connected to $conf->{'couchdb'}\n";
+my $sofea_conf_file = shift || 'base';
+my $sofea_conf = LoadFile("$sofea_conf_file.yaml") || die "Can't load $sofea_conf_file: $!\n";
+$sofea_conf ->{'id'} = "reaper-".$sofea_conf ->{'id'};
 
-my $population_size = shift || 128;
-my $max_evaluations = shift || 10000;
+my $logger = new Log::YAMLLogger $sofea_conf;
+
+my $population_size = $sofea_conf->{'base_population'};
+my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
@@ -48,8 +45,9 @@ while ( $evals_so_far < $max_evaluations ) {
   }
   my $response = $db->bulkStore( \@graveyard );
   $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
-  print "Deleted ".scalar(@$response)." chromosomes \n";
+  $logger->log( { Deleted => scalar(@$response) } );
 }
 
-print "\n\tFinished after $evals_so_far evaluations\n";
+$logger->log( { Finished => $evals_so_far}, 1 );
+$logger->close;
 
