@@ -1,0 +1,6 @@
+{
+  "_id" : "_design/show-function-examples",
+  "shows" : {
+    "summary" : "function(doc, req){ return '<h1>Hola mundo</h1>'; }",
+  }
+}
