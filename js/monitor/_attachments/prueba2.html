@@ -3,7 +3,7 @@
   <head><title>Mostrando los cromosomas</title></head>
   <body>
     <h1>Chromosomas</h1>
-    <ul id="chromosomes"></ul>
+    <div id="chromosomes"></div>
   </body>
   <script src="/_utils/script/jquery.js"></script>
   <script src="/_utils/script/jquery.couch.js"></script>
@@ -13,10 +13,10 @@
    function show_chromosomes() {  
     $("div#chromosomes").empty();  
     $db.view("by/fitness", {  
-    success: function(data) {  
+    success: function(data) {
     for (i in data.rows) {  
        id = data.rows[i].id;  
-       html = '<div class="chrom">' +  id '</div>';  
+       html = '<div class="chrom">' +  id + '</div>';  
        $("div#chromosomes").append(html);  
       }
     }});
