@@ -45,7 +45,7 @@ function check_evaluations () {
     $db.view("docs/count", {
 	success: function(data) {
 	    evaluations_so_far = data.rows[0].value;
-	    if ( evaluations_so_far < 10000 ) {
+	    if ( evaluations_so_far < 5000 ) {
 	        show_chromosomes();
 	    } else {
 		alert("It's over");
