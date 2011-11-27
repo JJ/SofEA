@@ -49,15 +49,19 @@ while ( $evals_so_far < $max_evaluations ) {
     
   }
   my $response = $db->bulkStore( \@updated_docs );
+  my $conflicts = 0; 
+  map( (defined $_->{'error'})?$conflicts++:undef, @$response );
   $logger->log( { Evaluated  => scalar(@$response),
-		Best =>  $best_so_far->{'id'},
-		Fitness => $best_so_far->{'data'}{'fitness'} } );
+		  Best =>  $best_so_far->{'id'},
+		  Fitness => $best_so_far->{'data'}{'fitness'},
+		  Conflicts => $conflicts } );
   $view = $doc->queryView( "rev1", startkey => rand(),
 			   limit=> $population_size );
   if (  !@{$view->{'rows'}} ) {
     sleep 1;
     $logger->log( "Sleeping" );
-    $view = $doc->queryView( "rev1", startkey => 0,
+    $view = $doc->queryView( "rev1", 
+			     startkey => rand(),
 			     limit=> $population_size ); # What a hack
     next;
   }

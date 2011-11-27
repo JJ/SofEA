@@ -17,8 +17,7 @@ function evaluate (data) {
 		best_chrom = this_element;
 	    }
 	}
-	html = '<div class="chrom">' +  best_chrom._id + "= " + best_chrom.fitness + '</div>';  
-	$("div#chromosomes").append(html);
+	$("div#chromosomes").html( cool_chrom( best_chrom._id));
 	$db .bulkSave({"docs": after_eval}, {
 	    success: function(data) {
 		console.log(data);
@@ -30,6 +29,20 @@ function evaluate (data) {
     }
     check_evaluations();
        
+}
+
+function cool_chrom( str ) { // Taken from old agajaj
+
+    var my_table = '<table style="padding:0;border-collapse:collapse"><tr>';
+    for ( var i = 0; i < str.length; i ++ ) {
+	if ( str[i] == '1' ) {
+	    my_table += '<td style="background:green">';
+	} else {
+	    my_table += '<td style="background:red">';
+	}
+	my_table += "&nbsp;</td>";
+    }
+    return my_table + "</tr></table>";
 }
 
 //--------------------------------------------------------------

@@ -26,7 +26,7 @@ my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
-my $sleep = shift || 10;
+my $sleep = $sofea_conf->{'reaper_delay'} || 1;
 my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
 while ( $evals_so_far < $max_evaluations ) {
   my $view = $rev->queryView( "rev2", limit=> $population_size );
@@ -36,7 +36,8 @@ while ( $evals_so_far < $max_evaluations ) {
   my @graveyard;
   my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
   if ( $all_of_them < $population_size ) {
-    sleep 1;
+    $logger->log( "Sleep $sleep" );
+    sleep $sleep;
     next;
   }
   for ( my $r = 0; $r < $all_of_them - $population_size; $r++ ) {
