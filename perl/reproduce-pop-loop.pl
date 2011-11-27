@@ -9,7 +9,7 @@ use lib qw(/home/jmerelo/progs/SimplEA/trunk/Algorithm-Evolutionary-Simple/lib/
 
 use YAML qw(LoadFile Dump); 
 use Log::YAMLLogger;
-use Algorithm::Evolutionary::Simple qw(random_chromosome max_ones get_pool_roulette_wheel produce_offspring );
+use Algorithm::Evolutionary::Simple qw( get_pool_roulette_wheel produce_offspring );
 use My::Couch;
 
 my $cdb_conf_file = shift || 'conf';
