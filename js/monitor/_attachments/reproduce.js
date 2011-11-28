@@ -9,8 +9,9 @@ function reproduce (data) {
     } else {
 	var pool = get_pool_roulette_wheel( data.rows, 32 );
 	var new_population = produce_offspring( pool, 32 );
+	$("div#chromosomes").html('');
 	for ( var i in new_population ) {
-	    $("div#chromosomes").append( cool_chrom( new_population._id));
+	    $("div#chromosomes").append( cool_chrom( new_population[i]._id));
 	}
 	$db .bulkSave({"docs": new_population}, {
 	    success: function(data) {

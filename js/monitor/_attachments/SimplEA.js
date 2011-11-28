@@ -33,7 +33,6 @@ function spin( wheel, number_of_slots ) {
 
 function produce_offspring( pool, offspring_size) {
     var crossed_strings = new Array;
-    var population_size = pool.length;
     pool.shuffle;
     for ( var i = 0; i < offspring_size/2; i++ )  {
 	var first = pool.pop();
@@ -41,10 +40,9 @@ function produce_offspring( pool, offspring_size) {
 	crossed_strings.push( crossover( first, second ) );
     }
     var population = new Array;
-    for ( i in population ) {
-	population[i] = mutate(crossed_strings[i]);
+    for ( i in crossed_strings ) {
+	population.push( mutate(crossed_strings[i]) );
     }
-
     return population;
 }
 
@@ -63,11 +61,10 @@ function crossover( guy_1, guy_2 ) {
 }
 
 function mutate( guy ) {
-    var mutation_point= Math.random(guy.value._id.length);
-    var to_mutate =  guy.value._id.substr(0,mutation_point-1);
-    to_mutate +=  (guy.value._id.charAt(mutation_point)  == "1")?"0":"1";
-    to_mutate +=  guy.value._id.substr(mutation_point+1,guy.value_id.length);
-    alert( 'to_mutate ' + to_mutate );
+    var mutation_point= Math.random(guy.length);
+    var to_mutate =  guy.substr(0,mutation_point-1);
+    to_mutate +=  (guy.charAt(mutation_point)  == "1")?"0":"1";
+    to_mutate +=  guy.substr(mutation_point+1,guy.length);
     var other_guy = { _id : to_mutate,
 		      str: to_mutate,
 		      rnd: Math.random() };
