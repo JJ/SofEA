@@ -27,28 +27,33 @@ my $max_evaluations = $sofea_conf->{'max_evaluations'};
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $by = $db->newDesignDoc('_design/by')->retrieve;
 my $sleep = $sofea_conf->{'reaper_delay'} || 1;
-my $best_so_far = $by->queryView('fitness')->{'rows'}->[0]{'value'} ;
-do {
+my $best_so_far = $by->queryView('fitness', limit => 1,
+				 descending => 'true')->{'rows'}->[0]{'value'} ;
+$best_so_far->{'fitness'} = $best_so_far->{'fitness'} || 0;
+while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
   my $view = $rev->queryView( "rev2", limit=> $population_size );
   my $by = $db->newDesignDoc('_design/by')->retrieve;
-  my $by_fitness = $by->queryView( "fitness" );
-
-  my @graveyard;
-  my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
-  if ( $all_of_them < $population_size ) {
-    $logger->log( "Sleep $sleep" );
-    sleep $sleep;
-    next;
+  my $by_fitness = $by->queryView( "fitness");
+  my $last =  $by_fitness->{'rows'}->[@{$by_fitness->{'rows'}}-1];
+  $best_so_far = $last->{'value'} ;
+  if ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'}  ) {
+    my @graveyard;
+    my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
+    if ( $all_of_them < $population_size ) {
+      $logger->log( "Sleep $sleep" );
+      sleep $sleep;
+      next;
+    }
+    for ( my $r = 0; $r < $all_of_them - $population_size; $r++ ) {
+      my $will_die = shift @{$by_fitness->{'rows'}};
+      push @graveyard, $db->newDoc( $will_die->{'id'}, $will_die->{'value'}{'_rev'}, $will_die->{'value'}) ; #deleted
+    }
+    my $response = $db->bulkStore( \@graveyard );
+    $logger->log( { Deleted => scalar(@$response) } );
   }
-  for ( my $r = 0; $r < $all_of_them - $population_size; $r++ ) {
-    my $will_die = shift @{$by_fitness->{'rows'}};
-    push @graveyard, $db->newDoc( $will_die->{'id'}, $will_die->{'value'}{'_rev'}, $will_die->{'value'}) ; #deleted
-  }
-  my $response = $db->bulkStore( \@graveyard );
-  $logger->log( { Deleted => scalar(@$response) } );
-  $best_so_far = $by->queryView('fitness')->{'rows'}->[0]{'value'} ;
-} while ( $best_so_far < $sofea_conf->{'chromosome_length'} );
+  
+}
 
-$logger->log( { Finished => $best_so_far}, 1 );
-$logger->close;
+  $logger->log( { Finished => $best_so_far}, 1 );
+  $logger->close;
 

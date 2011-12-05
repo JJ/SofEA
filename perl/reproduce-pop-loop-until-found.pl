@@ -30,9 +30,11 @@ my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $by = $db->newDesignDoc('_design/by')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = shift || 1;
-my $best_so_far = $by->queryView('fitness')->{'rows'}->[0]{'value'} ;
+my $best_so_far = $by->queryView('fitness', limit => 1,
+				 descending => 'true' )->{'rows'}->[0]{'value'} ;
 my $evals_so_far;
-while ( $evals_so_far < $sofea_conf->{'chromosome_length'} ) {
+$best_so_far->{'fitness'} = $best_so_far->{'fitness'} || 0;
+while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
   my $view = $rev->queryView( "rev2", 
 			      startkey=> rand(),
 			      limit=> $population_size );
@@ -58,7 +60,7 @@ while ( $evals_so_far < $sofea_conf->{'chromosome_length'} ) {
   my $response = $db->bulkStore( \@new_docs );
   my $conflicts = 0; 
   map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-  $best_so_far = $by->queryView('fitness')->{'rows'}->[0]{'value'} ; #Reeval how many
+  $best_so_far = $by->queryView('fitness', limit => 1)->{'rows'}->[0]{'value'} ; #Reeval how many
   $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
   $logger->log( { Evaluations => $evals_so_far,
 		  Best => $best_so_far,

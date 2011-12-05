@@ -31,7 +31,8 @@ my $view = $doc->queryView( "rev1", startkey => rand(),
 			    limit=> $population_size ); #could be less, don't care
 
 my $best_so_far = { data =>{ fitness => 0}}; # Dummy for comparisons
-do {
+
+while ( $best_so_far->{'data'}{'fitness'} <  $sofea_conf->{'chromosome_length'} ) {
   my @updated_docs;
   for my $p ( @{$view->{'rows'}} ) {
     $p->{'value'}->{'fitness'} = max_ones( $p->{'value'}{'str'});
@@ -61,7 +62,7 @@ do {
 			     limit=> $population_size ); # What a hack
     next;
   }
-} while ( $best_so_far->{'data'}{'fitness'} <  $sofea_conf->{'chromosome_length'} );
+}
 
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
