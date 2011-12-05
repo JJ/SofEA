@@ -29,13 +29,18 @@ my $by = $db->newDesignDoc('_design/by')->retrieve;
 my $sleep = $sofea_conf->{'reaper_delay'} || 1;
 my $best_so_far = $by->queryView('fitness', limit => 1,
 				 descending => 'true')->{'rows'}->[0]{'value'} ;
-$best_so_far->{'fitness'} = $best_so_far->{'fitness'} || 0;
+if ( ! defined $best_so_far->{'fitness'} ) {
+  $best_so_far = { 'fitness'  => 0 };
+}
 while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
   my $view = $rev->queryView( "rev2", limit=> $population_size );
   my $by = $db->newDesignDoc('_design/by')->retrieve;
   my $by_fitness = $by->queryView( "fitness");
   my $last =  $by_fitness->{'rows'}->[@{$by_fitness->{'rows'}}-1];
   $best_so_far = $last->{'value'} ;
+  if ( ! defined $best_so_far->{'fitness'} ) {
+    $best_so_far = { 'fitness'  => 0 };
+  }
   if ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'}  ) {
     my @graveyard;
     my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
