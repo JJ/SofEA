@@ -21,6 +21,7 @@ for my $p ( @{$view} ) {
 }
 
 my $response = $db->bulkDelete( \@all_docs );
+my $eval_doc =  $db->newDoc( 'evaluations', undef, { evals => 0} )->create;
 print "Deleted\n";
 
 #-----------------------------

@@ -4,4 +4,5 @@
 ./initial-pop.pl 
 ./evaluate-pop-loop.pl &
 ./reproduce-pop-loop.pl &
-./reaper.pl  
+./reaper.pl
+

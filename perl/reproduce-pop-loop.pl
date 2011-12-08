@@ -26,9 +26,10 @@ my $population_size = $sofea_conf->{'repro_pop_size'};
 my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
-my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = shift || 1;
-my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
+my $evaluations=  new CouchDB::Client::Doc ( { db => $db,
+					       id => 'evaluations' } );
+my $evals_so_far = $evaluations->retrieve->{'data'}->{'evals'};
 while ( $evals_so_far < $max_evaluations ) {
   my $view = $rev->queryView( "rev2", 
 			      startkey=> rand(),
@@ -55,7 +56,7 @@ while ( $evals_so_far < $max_evaluations ) {
   my $response = $db->bulkStore( \@new_docs );
   my $conflicts = 0; 
   map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-  $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
+  $evals_so_far = $evaluations->retrieve->{'data'}->{'evals'};
   $logger->log( { Evaluations => $evals_so_far,
 		  conflicts => $conflicts} ); 
 }

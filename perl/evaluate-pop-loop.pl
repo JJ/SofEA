@@ -32,8 +32,9 @@ my $view = $doc->queryView( "rev1", startkey => rand(),
 
 my $best_so_far = { data =>{ fitness => 0}}; # Dummy for comparisons
 
-my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
-my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
+my $evaluations=  new CouchDB::Client::Doc ( { db => $db,
+					       id => 'evaluations' } );
+my $evals_so_far = $evaluations->retrieve->{'data'}->{'evals'};
 
 while ( $evals_so_far < $max_evaluations ) { 
   my @updated_docs;
@@ -65,7 +66,7 @@ while ( $evals_so_far < $max_evaluations ) {
 			     limit=> $population_size ); # What a hack
     next;
   }
-  $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
+  $evals_so_far = $evaluations->retrieve->{'data'}->{'evals'}; #Reaper will update, not us
 } 
 
 $logger->log( {Finished => $evals_so_far} );

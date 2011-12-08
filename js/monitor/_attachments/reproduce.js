@@ -1,14 +1,15 @@
 $db = $.couch.db("sofea_test");
 var evaluations_so_far;
+var block_size = 32;
 //--------------------------------------------------------------
 function reproduce (data) {
     var after_eval = new Array;
     if (data.rows.length == 0 ) {
-	alert('No data');
+//	alert('No data');
         setTimeout('check_evaluations()',1000);
     } else {
-	var pool = get_pool_roulette_wheel( data.rows, 32 );
-	var new_population = produce_offspring( pool, 32 );
+	var pool = get_pool_roulette_wheel( data.rows, block_size );
+	var new_population = produce_offspring( pool, block_size );
 	$("div#chromosomes").html('');
 	for ( var i in new_population ) {
 	    $("div#chromosomes").append( cool_chrom( new_population[i]._id));
@@ -21,8 +22,9 @@ function reproduce (data) {
 		console.log(status);
             }
 	});
+	check_evaluations();
     }
-    check_evaluations();
+
        
 }
 //--------------------------------------------------------------
@@ -32,9 +34,7 @@ function check_evaluations () {
 	    evaluations_so_far = data.rows[0].value;
 	    if ( evaluations_so_far < 5000 ) {
 	        repro_chromosomes();
-	    } else {
-		alert("It's over");
-	    }
+	    } 
 	}
     } );
 }

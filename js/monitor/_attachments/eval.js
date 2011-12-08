@@ -26,8 +26,8 @@ function evaluate (data) {
 		console.log(status);
             }
 	});
+	check_evaluations();
     }
-    check_evaluations();
        
 } 
 

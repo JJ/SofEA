@@ -27,7 +27,7 @@ my $max_evaluations = $sofea_conf->{'max_evaluations'};
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = $sofea_conf->{'reaper_delay'} || 1;
-my $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ;
+my $evals_so_far = 0;
 while ( $evals_so_far < $max_evaluations ) {
   my $view = $rev->queryView( "rev2", limit=> $population_size );
   my $by = $db->newDesignDoc('_design/by')->retrieve;
@@ -36,17 +36,26 @@ while ( $evals_so_far < $max_evaluations ) {
   my @graveyard;
   my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
   if ( $all_of_them < $population_size ) {
-    $logger->log( "Sleep $sleep" );
+    $logger->log( { Sleep => $sleep,
+		    Evaluated => $all_of_them} );
     sleep $sleep;
     next;
   }
   for ( my $r = 0; $r < $all_of_them - $population_size; $r++ ) {
     my $will_die = shift @{$by_fitness->{'rows'}};
-    push @graveyard, $db->newDoc( $will_die->{'id'}, $will_die->{'value'}{'_rev'}, $will_die->{'value'}) ; #deleted
+    push @graveyard, $db->newDoc( $will_die->{'id'}, 
+				  $will_die->{'value'}{'_rev'}, 
+				  { fitness => $will_die->{'value'}{'fitness'}}) ; #deleted
   }
   my $response = $db->bulkStore( \@graveyard );
-  $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
-  $logger->log( { Deleted => scalar(@$response) } );
+  $evals_so_far  += $#graveyard;
+  my $eval_doc = new CouchDB::Client::Doc ( { db => $db,
+					   id => 'evaluations' } )->retrieve;
+  $eval_doc->{'data'}->{'evals'}  = $evals_so_far;
+  $eval_doc->update;
+  $logger->log( { 
+		 Evals => $evals_so_far,
+		 Deleted => scalar(@$response) } );
 }
 
 $logger->log( { Finished => $evals_so_far}, 1 );
