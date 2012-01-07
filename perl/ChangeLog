@@ -1,5 +1,28 @@
 2012-01-07  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
+	* run-until-found-par-repro.sh: Trying again with parallel
+	reproducer to start, due to high amount of "sleeps" in the single
+	evaluator. 
+
+	* i128-p128-er100.yaml (reaper_delay): Repeating experiments with
+	new method to find whether the solution has been found or not. It
+	failed before, evaluators kept running until a solution was found.
+
+	* run-until-found-par-all.sh: 
+	real	12m15.566s
+user	2m11.740s
+sys	0m13.830s
+
+	Big improvement with parallel evaluation. TEsting parallel both.
+
+	* run-until-found-par-eval.sh: Second run, after fixing errors,
+	worse results: 
+	real	19m27.256s
+user	2m43.240s
+sys	0m16.150s
+
+	Well, user is much smaller, but wall clock is what counts...
+
 	* run-until-found.sh: First run with p128, blocksize 100 results:
 	real	17m52.632s
 user	7m37.530s

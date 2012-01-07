@@ -30,42 +30,52 @@ my $doc = $db->newDesignDoc('_design/rev')->retrieve;
 my $view = $doc->queryView( "rev1", startkey => rand(),
 			    limit=> $population_size ); #could be less, don't care
 
-my $best_so_far = { data =>{ fitness => 0}}; # Dummy for comparisons
-
-while ( $best_so_far->{'data'}{'fitness'} <  $sofea_conf->{'chromosome_length'} ) {
+my $best_so_far = { data => { fitness => 0 }}; # Dummy for comparisons
+my $solution_doc = $db->newDoc('solution');  
+my $solution_found = { data => { found => 0 }}; # Dummy for comparisons
+do {
   my @updated_docs;
-  for my $p ( @{$view->{'rows'}} ) {
-    $p->{'value'}->{'fitness'} = max_ones( $p->{'value'}{'str'});
-    my $new_guy = $db->newDoc( $p->{'value'}{'_id'},
-			       $p->{'value'}{'_rev'}, 
-			       $p->{'value'} );
-    push @updated_docs, $new_guy;
-    if ( $new_guy->{'data'}{'fitness'} > $best_so_far->{'data'}{'fitness'} ) {
-      $best_so_far = $new_guy;
+  if (  @{$view->{'rows'}} ) {
+    for my $p ( @{$view->{'rows'}} ) {
+      $p->{'value'}->{'fitness'} = max_ones( $p->{'value'}{'str'});
+      my $new_guy = $db->newDoc( $p->{'value'}{'_id'},
+				 $p->{'value'}{'_rev'}, 
+				 $p->{'value'} );
+      push @updated_docs, $new_guy;
+      if ( $new_guy->{'data'}{'fitness'} > $best_so_far->{'data'}{'fitness'} ) {
+	$best_so_far = $new_guy;
+      }
+      if ( $new_guy->{'data'}{'fitness'}  >= $sofea_conf->{'chromosome_length'}  ) {
+	print "Solution found \n\n";
+	$solution_found = $solution_doc->retrieve;
+	$solution_found->{'data'}->{'found'} = $new_guy->{'data'};
+	$solution_found->update;
+      }
+      
     }
-    
-  }
-  my $response = $db->bulkStore( \@updated_docs );
-  my $conflicts = 0; 
-  map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-  $logger->log( { Evaluated  => scalar(@$response),
-		  Best =>  $best_so_far->{'id'},
-		  Fitness => $best_so_far->{'data'}{'fitness'},
-		  Conflicts => $conflicts } );
-  $view = $doc->queryView( "rev1", startkey => rand(),
-			   limit=> $population_size );
-  if (  !@{$view->{'rows'}} ) {
+    my $response = $db->bulkStore( \@updated_docs );
+    my $conflicts = 0; 
+    map( (defined $_->{'error'})?$conflicts++:undef, @$response );
+    $logger->log( { Evaluated  => scalar(@$response),
+		    Best =>  $best_so_far->{'id'},
+		    Fitness => $best_so_far->{'data'}{'fitness'},
+		    Conflicts => $conflicts } );
+  } else  {
     sleep 1;
     $logger->log( "Sleeping" );
-    $view = $doc->queryView( "rev1", 
-			     startkey => rand(),
-			     limit=> $population_size ); # What a hack
-    next;
   }
-}
+  if ( $solution_found->{'data'}->{'found'} == 0 ) {
+    $view = $doc->queryView( "rev1", startkey => rand(),
+			     limit=> $population_size );
+
+    eval {
+      $solution_found = $solution_doc->retrieve;
+    };
+  }
+} until ($solution_found->{'data'}->{'found'} ne '0' );
 
 $logger->close;
-
+print "End Evaluator\n";
 
 #-----------------------------
 

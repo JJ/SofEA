@@ -30,11 +30,10 @@ my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $by = $db->newDesignDoc('_design/by')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = shift || 1;
-my $best_so_far = $by->queryView('fitness', limit => 1,
-				 descending => 'true' )->{'rows'}->[0]{'value'} ;
 my $evals_so_far;
-$best_so_far->{'fitness'} = $best_so_far->{'fitness'} || 0;
-while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
+my $solution_found;
+
+do {
   my $view = $rev->queryView( "rev2", 
 			      startkey=> rand(),
 			      limit=> $population_size );
@@ -43,32 +42,35 @@ while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
   my %fitness_of;
   if ( !@{$view->{'rows'}}  )  {
     sleep $sleep;
-    next;
-  }
+     $logger->log( "Sleeping" );
+  } else {
 
-  for my $p ( @{$view->{'rows'}} ) {
-    push( @population, $p->{'id'});
-    $fitness_of{ $p->{'id'} } =  $p->{'value'}{'fitness'};
+    for my $p ( @{$view->{'rows'}} ) {
+      push( @population, $p->{'id'});
+      $fitness_of{ $p->{'id'} } =  $p->{'value'}{'fitness'};
+    }
+    
+    my @pool = get_pool_roulette_wheel( \@population, \%fitness_of, $population_size );
+    my @new_population  = produce_offspring( \@pool, $population_size );
+    
+    my @new_docs = map(  $db->newDoc($_, undef, { str => $_, 
+						  rnd => rand() } ), @new_population );
+    
+    my $response = $db->bulkStore( \@new_docs );
+    my $conflicts = 0; 
+    map( (defined $_->{'error'})?$conflicts++:undef, @$response );
+    $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
+    $logger->log( { Evaluations => $evals_so_far,
+		    conflicts => $conflicts} ); 
   }
-
-  my @pool = get_pool_roulette_wheel( \@population, \%fitness_of, $population_size );
-  my @new_population  = produce_offspring( \@pool, $population_size );
-  
-  my @new_docs = map(  $db->newDoc($_, undef, { str => $_, 
-						rnd => rand() } ), @new_population );
-  
-  my $response = $db->bulkStore( \@new_docs );
-  my $conflicts = 0; 
-  map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-  $best_so_far = $by->queryView('fitness', limit => 1,
-				descending => 'true')->{'rows'}->[0]{'value'} ; #Reeval how many
-  $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
-  $logger->log( { Evaluations => $evals_so_far,
-		  Best => $best_so_far,
-		  conflicts => $conflicts} ); 
-}
+  my $solution_doc = $db->newDoc('solution');  
+  eval {
+    $solution_found = $solution_doc->retrieve;
+  };
+} until ($solution_found->{'data'}->{'found'} ne '0');
 $logger->log( {Finished => $evals_so_far}, 1);
 $logger->close;
+print "End Reproducer\n";
 
 #-----------------------------
 
