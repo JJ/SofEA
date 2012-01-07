@@ -1,0 +1,23 @@
+2012-01-07  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-until-found.sh: First run with p128, blocksize 100 results:
+	real	17m52.632s
+user	7m37.530s
+sys	0m49.720s
+
+	Several bug fixes on the fly, one of them made reaper not delay
+	after none was eliminated. 
+
+2011-11-26  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* Running again experiments, I made a msitake and put two
+	reproducers (which were mainly hungry) instead of two
+	evaluators. Took less time, but obtained a max fitness of 90 or
+	so. 
+
+	* evaluate-pop-loop.pl: Changed evaluate to start with rand(), to
+	avoid problems. 
+
+	* base.yaml (base_population): Setting base population to 128 for
+	the first set of experiments.
+

@@ -44,7 +44,7 @@ while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
   if ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'}  ) {
     my @graveyard;
     my $all_of_them = scalar @{$by_fitness->{'rows'}} ;
-    if ( $all_of_them < $population_size ) {
+    if ( $all_of_them <= $population_size ) {
       $logger->log( "Sleep $sleep" );
       sleep $sleep;
       next;
@@ -54,7 +54,9 @@ while ( $best_so_far->{'fitness'} < $sofea_conf->{'chromosome_length'} ) {
       push @graveyard, $db->newDoc( $will_die->{'id'}, $will_die->{'value'}{'_rev'}, $will_die->{'value'}) ; #deleted
     }
     my $response = $db->bulkStore( \@graveyard );
-    $logger->log( { Deleted => scalar(@$response) } );
+    $logger->log( { 
+		   Available => $all_of_them,
+		   Deleted => scalar(@$response) } );
   }
   
 }

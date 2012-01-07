@@ -64,9 +64,6 @@ while ( $best_so_far->{'data'}{'fitness'} <  $sofea_conf->{'chromosome_length'} 
   }
 }
 
-my $rev = $db->newDesignDoc('_design/rev')->retrieve;
-my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
-$logger->log( {Finished => $evaluations} );
 $logger->close;
 
 
