@@ -30,7 +30,7 @@ my $rev = $db->newDesignDoc('_design/rev')->retrieve;
 my $by = $db->newDesignDoc('_design/by')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = shift || 1;
-my $evals_so_far;
+my $total_conflicts;
 my $solution_found;
 
 do {
@@ -59,16 +59,15 @@ do {
     my $response = $db->bulkStore( \@new_docs );
     my $conflicts = 0; 
     map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-    $evals_so_far = $evaluations->queryView('count')->{'rows'}->[0]{'value'} ; #Reeval how many
-    $logger->log( { Evaluations => $evals_so_far,
-		    conflicts => $conflicts} ); 
+    $logger->log( { conflicts => $conflicts} );
+    $total_conflicts += $conflicts;
   }
   my $solution_doc = $db->newDoc('solution');  
   eval {
     $solution_found = $solution_doc->retrieve;
   };
 } until ($solution_found->{'data'}->{'found'} ne '0');
-$logger->log( {Finished => $evals_so_far}, 1);
+$logger->log( {Finished => $total_conflicts}, 1);
 $logger->close;
 print "End Reproducer\n";
 

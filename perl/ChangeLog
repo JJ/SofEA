@@ -1,8 +1,46 @@
+2012-01-08  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* reproduce-pop-loop-until-found.pl: Testing now with new
+	non-buggy version. 3 minutes, on average.
+
+	* run-until-found-prof.sh: Now checking with profilers to identify
+	bottlenecks. 
+	Computing evaluations in reproduce (which was needed only for
+	statistics was one of the bottlenecks).
+
+	* run-until-found.sh: Tested without the checks for non-chromosome
+	docs (solution and iterations). It improves a bit, from 3 minutes
+	to 
+	real	2m44.697s
+user	0m17.300s
+sys	0m1.990s
+
+(single iteratio, but still...)
+	Now checking without parsing to Float in fitness view. For some
+	reason, fitness stringified in one iteration which made me add it.
+
+	Without the "parseFloat", result is pretty much the same
+	real	2m56.050s
+user	0m18.730s
+sys	0m2.180s
+
+	But now it's difficult to say, because teh number of chromosomes
+	could have been different.
+	* ../js/rev/views/rev1/map.js: Taking "ifs" of to avoid (big)
+	decrease in speed. 
+
 2012-01-07  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* run-until-found-par-repro.sh: Trying again with parallel
 	reproducer to start, due to high amount of "sleeps" in the single
 	evaluator. 
+	A small improvement over the other:
+	real	26m11.944s
+user	3m1.330s
+sys	0m18.630s
+
+	Should be expected, since the only thing done is to improve
+	"Sleep" periods for evaluators.
 
 	* i128-p128-er100.yaml (reaper_delay): Repeating experiments with
 	new method to find whether the solution has been found or not. It
