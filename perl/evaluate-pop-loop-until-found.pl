@@ -20,7 +20,10 @@ my $db = $c->db;
 my $sofea_conf_file = shift || 'base';
 my $sofea_conf = LoadFile("$sofea_conf_file.yaml") || die "Can't load $sofea_conf_file: $!\n";
 $sofea_conf ->{'id'} = "eval-".$sofea_conf ->{'id'};
-
+if ($sofea_conf->{'initial_delay'}) {
+  sleep  $sofea_conf->{'initial_delay'};
+  print "Delayed $sofea_conf->{'initial_delay'}\n";
+}
 my $logger = new Log::YAMLLogger $sofea_conf;
 
 my $population_size = $sofea_conf->{'eval_pop_size'};

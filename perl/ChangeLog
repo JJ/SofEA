@@ -1,5 +1,10 @@
 2012-01-10  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
+	* extract-evals.pl: Adapted this old script to extract the number
+	of evaluations from the number of deleted + base population. There
+	might be a few over that, but I expect it should be pretty much
+	the same for all (or a random variable).
+
 	* run-until-found-par.sh: With 2 reproducers and 6 evaluators,
 	even better:
 
