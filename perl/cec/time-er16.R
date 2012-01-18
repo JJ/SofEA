@@ -15,3 +15,9 @@ time.er16.eval2.df <- data.frame( Configuration=c(rep('No delay',10), rep('Delay
                               time.i128.p128.er16.eval2.repro1.id1$V1));
 boxplot(time.er16.eval2.df$Time ~ time.er16.eval2.df$Configuration,main='Average Time (in seconds) to Solution',
         sub='Evaluator and reproducer packet size = 16. effect of asynchrony',xlab='Delay',ylab='Seconds' )
+
+summary(time.i128.p128.er16.eval1.repro1$V1);
+summary(time.i128.p128.er16.eval2.repro1$V1);
+summary(time.i128.p128.er16.eval6.repro2$V1);
+summary(time.i128.p128.er16.eval4.repro1$V1);
+summary(time.i128.p128.er16.eval8.repro2$V1);
