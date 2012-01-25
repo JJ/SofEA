@@ -30,12 +30,14 @@ my $population_size = $sofea_conf->{'eval_pop_size'};
 my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $doc = $db->newDesignDoc('_design/rev')->retrieve;
-my $view = $doc->queryView( "rev1", startkey => rand(),
+my $fraction = 1-$sofea_conf->{'eval_pop_size'}/$sofea_conf->{'base_population'};
+my $view = $doc->queryView( "rev1", startkey => rand($fraction),
 			    limit=> $population_size ); #could be less, don't care
 
 my $best_so_far = { data => { fitness => 0 }}; # Dummy for comparisons
 my $solution_doc = $db->newDoc('solution');  
 my $solution_found = { data => { found => 0 }}; # Dummy for comparisons
+my $rand ;
 do {
   my @updated_docs;
   if (  @{$view->{'rows'}} ) {
@@ -62,13 +64,15 @@ do {
     $logger->log( { Evaluated  => scalar(@$response),
 		    Best =>  $best_so_far->{'id'},
 		    Fitness => $best_so_far->{'data'}{'fitness'},
-		    Conflicts => $conflicts } );
+		    Conflicts => $conflicts,
+		    Rand => $rand} );
   } else  {
     sleep 1;
     $logger->log( "Sleeping" );
   }
   if ( $solution_found->{'data'}->{'found'} == 0 ) {
-    $view = $doc->queryView( "rev1", startkey => rand(),
+    $rand = rand($fraction);
+    $view = $doc->queryView( "rev1", startkey => $rand,
 			     limit=> $population_size );
 
     eval {

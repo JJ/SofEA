@@ -1,3 +1,21 @@
+2012-01-23  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-until-found-par-with-greedy-eval.sh: Testing with a new
+	greedy evaluator, which evaluates all individuals available. Very
+	good results, best so far. Let's see how it paralellizes. 
+
+2012-01-22  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* evaluate-pop-loop-until-found.pl: Changes in how random number
+	used to retrieve population are generated. Instead of using the
+	whole range, which resulted in generating too high numbers that
+	caused the evaluator to retrieve less, now the range is 1 less the
+	the evaluation pop size divided by the base population size. That
+	way, it is more likely that if the number of individuals retrieved
+	is less than the packet size, it's due to lack of individuals to
+	evaluate, and not to generating numbers too high to retrieve a
+	good amount of individuals. 
+
 2012-01-10  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* extract-evals.pl: Adapted this old script to extract the number

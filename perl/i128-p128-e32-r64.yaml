@@ -1,6 +1,6 @@
 
 ---
-id: ip128-e16-r64
+id: ip128-e32-r64
 initial_population: 128
 chromosome_length: 128
 base_population: 128
