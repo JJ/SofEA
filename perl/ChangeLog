@@ -1,3 +1,9 @@
+2012-01-25  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* reproduce-pop-loop-until-found.pl: Key seems to be in the
+	population used by the reproducer, which was not taken into
+	account until now. Let's check it.
+
 2012-01-23  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* run-until-found-par-with-greedy-eval.sh: Testing with a new

@@ -59,7 +59,8 @@ do {
     my $response = $db->bulkStore( \@new_docs );
     my $conflicts = 0; 
     map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-    $logger->log( { conflicts => $conflicts} );
+    $logger->log( { conflicts => $conflicts,
+		    population => scalar @population} );
     $total_conflicts += $conflicts;
   }
   my $solution_doc = $db->newDoc('solution');  
