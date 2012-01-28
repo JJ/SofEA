@@ -1,3 +1,14 @@
+2012-01-28  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* evaluate-pop-loop-until-found.pl: Starting new experiments with
+	e64 r64, e1r1. Labeling experiments with this new configuration
+	with "new".
+
+	* reproduce-pop-loop-until-found.pl: First change post-GECCO:
+	changing the random range in the same way that we did for the
+	evaluator, using only the equivalent fraction of the base
+	population. 
+
 2012-01-25  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* reproduce-pop-loop-until-found.pl: Key seems to be in the

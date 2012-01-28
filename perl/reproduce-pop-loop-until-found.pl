@@ -27,6 +27,7 @@ my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 #Create design docs
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
+my $fraction = 1-$sofea_conf->{'repro_pop_size'}/$sofea_conf->{'base_population'};
 my $by = $db->newDesignDoc('_design/by')->retrieve;
 my $evaluations = $db->newDesignDoc('_design/docs')->retrieve;
 my $sleep = shift || 1;
@@ -35,7 +36,7 @@ my $solution_found;
 
 do {
   my $view = $rev->queryView( "rev2", 
-			      startkey=> rand(),
+			      startkey=> rand($fraction),
 			      limit=> $population_size );
 
   my @population;
@@ -54,7 +55,7 @@ do {
     my @new_population  = produce_offspring( \@pool, $population_size );
     
     my @new_docs = map(  $db->newDoc($_, undef, { str => $_, 
-						  rnd => rand() } ), @new_population );
+						  rnd => rand($fraction) } ), @new_population );
     
     my $response = $db->bulkStore( \@new_docs );
     my $conflicts = 0; 
