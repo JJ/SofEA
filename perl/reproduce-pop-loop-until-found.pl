@@ -55,7 +55,7 @@ do {
     my @new_population  = produce_offspring( \@pool, $population_size );
     
     my @new_docs = map(  $db->newDoc($_, undef, { str => $_, 
-						  rnd => rand($fraction) } ), @new_population );
+						  rnd => rand() } ), @new_population );
     
     my $response = $db->bulkStore( \@new_docs );
     my $conflicts = 0; 

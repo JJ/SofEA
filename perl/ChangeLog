@@ -1,5 +1,12 @@
 2012-01-28  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
+	* evaluate-pop-loop-until-found.pl: Testing with the new "int"
+	random generator, that ensures that, from time to time, the random
+	number generated is 0.
+
+	* My/Couch.pm (db): Adding an int_rnd function for avoiding
+	leaving those with the lower rnd number alone.
+
 	* evaluate-pop-loop-until-found.pl: Starting new experiments with
 	e64 r64, e1r1. Labeling experiments with this new configuration
 	with "new".

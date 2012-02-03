@@ -10,6 +10,8 @@ use CouchDB::Client;
 
 use base qw/Exporter/;
 
+our @EXPORT = qw/int_rand/;
+
 sub new {
   my $class = shift;
   my $conf_param = shift;
@@ -34,8 +36,15 @@ sub new {
 }
 
 sub db {
-  my $self = shift;
+   my $self = shift;
   return $self->{'_db'};
+}
+
+sub int_rand {
+  my $constant = 10;
+  my $range = shift;
+  my $rnd = rand( $range );
+  return int($rnd*$constant)/$constant;
 }
 
 "¿Cómo?"; # Magic true value required at end of module

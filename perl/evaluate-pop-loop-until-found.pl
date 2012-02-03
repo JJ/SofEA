@@ -31,7 +31,7 @@ my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 my $doc = $db->newDesignDoc('_design/rev')->retrieve;
 my $fraction = 1-$sofea_conf->{'eval_pop_size'}/$sofea_conf->{'base_population'};
-my $view = $doc->queryView( "rev1", startkey => rand($fraction),
+my $view = $doc->queryView( "rev1", startkey => int_rand($fraction),
 			    limit=> $population_size ); #could be less, don't care
 
 my $best_so_far = { data => { fitness => 0 }}; # Dummy for comparisons
@@ -71,7 +71,7 @@ do {
     $logger->log( "Sleeping" );
   }
   if ( $solution_found->{'data'}->{'found'} == 0 ) {
-    $rand = rand($fraction);
+    $rand = int_rand($fraction);
     $view = $doc->queryView( "rev1", startkey => $rand,
 			     limit=> $population_size );
 
