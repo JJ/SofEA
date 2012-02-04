@@ -8,10 +8,13 @@ my @files_to_process = glob $files;
 
 use DateTime;
 use File::Slurp qw(read_file);
+
 for my $f ( @files_to_process ) {
   my $text= read_file($f);
-  my $total_conflicts;
-  my (@conflicts) = ( $text =~ /population: (\d+)/gs) ;
-  map( $total_conflicts += $_, @conflicts);
-  print scalar $total_conflicts, "\n";
+  my ($base_population) = ( $text =~ /repro_pop_size: (\d+)/ );
+  my @evaluated = ( $text =~ /population: (\d+)/g) ;
+  my $total;
+  map( $total+=$_, @evaluated );
+  print scalar $total/($base_population*(scalar @evaluated)), "\n";
 }
+
