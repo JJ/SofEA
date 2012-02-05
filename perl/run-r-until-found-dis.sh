@@ -18,5 +18,6 @@ do
     ./repro-eval-until-found.pl conf  R-i64-p128-r64 &
     ./repro-eval-until-found.pl conf  R-i64-p128-r32 &
     ./repro-eval-until-found.pl conf  R-i64-p128-r16 &
+    ./repro-eval-until-found.pl conf  R-i64-p128-r8 &
     ./repro-reaper-until-found.pl conf  R-i64-p128-r64
 done
