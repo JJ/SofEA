@@ -17,11 +17,13 @@ for my $f ( @files_to_process ) {
   };
   if ( @data ) {
     my $start_time = $data[0]->[0];
-    my $end_time = $data[@data-1]->[0];
-    my $diff = $end_time - $start_time;
-    print $diff->minutes*60+$diff->seconds, "\n";
+    my $end_time;
+    if ( ref $data[@data-1]  eq 'ARRAY' ) { # error otherwise
+      $end_time = $data[@data-1]->[0];
+      my $diff = $end_time - $start_time;
+      print $diff->minutes*60+$diff->seconds, "\n";
+    } 
   }
 }
-  
 
 
