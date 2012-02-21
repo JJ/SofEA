@@ -97,18 +97,28 @@ do {
 			    { str => $b,
 			      fitness => $fitness_of{$b}});
       push @new_docs, $new_guy;
-      last if !@new_guys_sorted;
-      last if !@old_guys_sorted;
-    } while ( $fitness_of{$new_guys_sorted[$#new_guys_sorted]} > $fitness_of{ $old_guys_sorted[0] } );
+    } while (  @new_guys_sorted 
+	       and @old_guys_sorted 
+	       and ($fitness_of{$new_guys_sorted[$#new_guys_sorted]} > $fitness_of{ $old_guys_sorted[0] }) );
 
     my $response = $db->bulkStore( \@new_docs );
-    my $conflicts = 0; 
-    map( (defined $_->{'error'})?$conflicts++:undef, @$response );
-    $logger->log( { conflicts => $conflicts,
+    my $conflicts_old = 0; 
+    my $conflicts_new = 0;
+    for my $r (@$response ) {
+      if  (defined $r->{'error'}) {
+	if (defined $old_guys{$r->{'id'}}) {
+	  $conflicts_old ++;
+	} else {
+	  $conflicts_new++;
+	}
+      }
+    }
+    $logger->log( { conflicts_old => $conflicts_old,
+		    conflicts_new => $conflicts_new,
 		    population => scalar @population,
 		    best => $best_so_far,
 		    fitness => $best_fitness} );
-    $total_conflicts += $conflicts;
+    $total_conflicts += $conflicts_old + $conflicts_new;
   }
   my $solution_doc = $db->newDoc('solution');  
   eval {

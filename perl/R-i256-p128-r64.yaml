@@ -1,0 +1,5 @@
+---
+id: R-i256-p128-r64
+initial_population: 256
+chromosome_length: 128
+repro_pop_size: 64
