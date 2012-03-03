@@ -23,6 +23,7 @@ for my $p ( @{$view} ) {
 my $response = $db->bulkDelete( \@all_docs );
 $db->newDoc( 'evaluations', undef, { evals => 0} )->create;
 $db->newDoc( 'solution', undef, { found => 0} )->create;
+sleep 1;
 print "Deleted\n";
 
 #-----------------------------

@@ -1,3 +1,15 @@
+2012-02-22  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-p-peaks-w256.sh: Continuing change of 64 clients by
+	128. First result was very good.
+
+	* run-p-peaks-dis.sh (BASE): First test "dis" included 256, 128
+	and 64. Second added 32. Third includes 2 of each : 128, 64,
+	32. Really, I should use this more often... This one yields worst
+	results ever. 
+	(BASE): One of the 128 is changed to 256. Seems like bigger
+	populations work better ,
+
 2012-01-28  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* evaluate-pop-loop-until-found.pl: Testing with the new "int"
