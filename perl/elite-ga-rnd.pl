@@ -37,7 +37,7 @@ my $solution_doc = $db->newDoc('solution');
 my $solution_found = { data => { found => 0 }}; # Dummy for comparisons
 do {
   my $view = $by->queryView( "fitness_null", 
-			     limit=> $population_size,
+			     limit=> int($population_size/(1+rand(3))),
 			     descending => 'true' );
 
   my @population;
@@ -51,9 +51,10 @@ do {
       push( @population, $p->{'id'});
       $fitness_of{ $p->{'id'} } =  $p->{'key'};
     }
+    my $this_population_size = scalar @population;
     my $fitness_of_worst = $fitness_of{$population[$#population]};
-    my @pool = get_pool_roulette_wheel( \@population, \%fitness_of, $population_size );
-    my @new_population  = produce_offspring( \@pool, $population_size );
+    my @pool = get_pool_roulette_wheel( \@population, \%fitness_of, $this_population_size );
+    my @new_population  = produce_offspring( \@pool, $this_population_size );
     
     my %new_guys;
     my @new_docs;
@@ -69,15 +70,12 @@ do {
       if ( $fitness  >= $sofea_conf->{'chromosome_length'}  ) {
 	 print "Solution found \n\n";
 	 $solution_found = $solution_doc->retrieve;
-	 my $new_guy = $db->newDoc($p,  undef, { str => $p, 
-						 rnd => rand(),
-						 fitness => $fitness }) ;
+	 my $new_guy = $db->newDoc($p,  undef, { fitness => $fitness }) ;
 	 $solution_found->{'data'}->{'found'} = $new_guy->{'data'};
 	 $solution_found->update;
       }
       if ( $fitness > $fitness_of_worst ) {
-	my  $new_guy= $db->newDoc($p,  undef, { str => $p, 
-						fitness => $fitness }) ;
+	my  $new_guy= $db->newDoc($p,  undef, {fitness => $fitness }) ;
 	push @new_docs, $new_guy;
       }
 
@@ -89,7 +87,8 @@ do {
     $logger->log( { conflicts => $conflicts,
 		    population => scalar @population,
 		    best => $best_so_far,
-		    fitness => $best_fitness} );
+		    fitness => $best_fitness,
+		    new_docs => scalar( @new_docs )} );
     $total_conflicts += $conflicts;
   }
   my $solution_doc = $db->newDoc('solution');  

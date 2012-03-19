@@ -1,3 +1,45 @@
+2012-03-19  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* elite-ga-rnd.pl: Fixing an error: full population was generated,
+	not only the population size that was retrieved. New individuals
+	were also created with "old" format, not new one.
+
+	* run-elite-ga-rnd.sh: Testing with reduction of chromosome
+	representation to chromosome and fitness, to reduce overhead. 
+
+	* elite-ga-rnd.pl: 
+	real	1m29.829s
+user	0m46.160s
+sys	0m3.210s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/rnd-e-ir64-c4
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mv repro-e-ir* PPSN/rnd-e-ir64-c4/
+
+	Does not degrade with new clients. Problems: very fast
+
+	* run-elite-ga-rnd.sh: Testing new
+
+	* elite-ga.pl: New version of this program adding to the
+	population only those better than the worst of the old population 
+	This obtains the best results so far. Let's see how they scale.
+	real	1m37.484s
+user	0m30.950s
+sys	0m2.270s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ time ./run-elite-ga.sh e-ir64 2 10
+
+real	1m44.816s
+user	0m43.810s
+sys	0m3.380s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ Solution found 
+
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/e-ir64-c3-v2
+
+	Problem is at this speed they are pretty much synchronized and
+	then working on the same population. 
+	
 2012-02-22  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* run-p-peaks-w256.sh: Continuing change of 64 clients by
