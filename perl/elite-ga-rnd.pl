@@ -37,7 +37,7 @@ my $solution_doc = $db->newDoc('solution');
 my $solution_found = { data => { found => 0 }}; # Dummy for comparisons
 do {
   my $view = $by->queryView( "fitness_null", 
-			     limit=> int($population_size/(1+rand(3))),
+			     limit=> int($population_size/(1+rand(15))),
 			     descending => 'true' );
 
   my @population;
@@ -77,7 +77,7 @@ do {
       if ( $fitness > $fitness_of_worst ) {
 	my  $new_guy= $db->newDoc($p,  undef, {fitness => $fitness }) ;
 	push @new_docs, $new_guy;
-      }
+     }
 
     }
 

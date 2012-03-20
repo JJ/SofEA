@@ -1,3 +1,7 @@
+2012-03-20  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* elite-ga-rnd.pl: Testing with division of population size up to 16.
+
 2012-03-19  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* elite-ga-rnd.pl: Fixing an error: full population was generated,
