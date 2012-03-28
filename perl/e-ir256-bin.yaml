@@ -1,0 +1,8 @@
+
+---
+id: e-ir256-bin
+initial_population: 256
+chromosome_length: 128
+repro_pop_size: 256
+pool: binary
+

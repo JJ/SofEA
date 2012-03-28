@@ -1,5 +1,14 @@
 2012-03-20  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
+	* run-elite-ga-rnd-iris.sh: Made experiment with real-life
+	Internet server: 
+	real	28m7.152s
+user	0m32.620s
+sys	0m3.310s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ time ./run-elite-ga-rnd-iris.sh e-ir128 2 3
+
+	Latency really sucks. It's 60 times slower than local. 
+
 	* elite-ga-rnd.pl: Testing with division of population size up to 16.
 
 2012-03-19  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
