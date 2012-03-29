@@ -1,0 +1,8 @@
+
+---
+id: i-i256-r8-roul-l200
+initial_population: 256
+chromosome_length: 200
+repro_pop_size: 8
+pool: roulette
+gen_to_migration: 25

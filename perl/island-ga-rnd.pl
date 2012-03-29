@@ -73,7 +73,7 @@ do {
     if ( $fitness  >= $sofea_conf->{'chromosome_length'}  ) {
       print "Solution found \n\n";
       $solution_found = $solution_doc->retrieve;
-      my $new_guy = $db->newDoc($p,  undef, { fitness => $fitness }) ;
+      my $new_guy = $db->newDoc($p,  undef, { fitness => $fitness }); 
       $solution_found->{'data'}->{'found'} = $new_guy->{'data'};
       $solution_found->update;
     }
@@ -81,7 +81,6 @@ do {
       my  $new_guy= $db->newDoc($p,  undef, {fitness => $fitness }) ;
       push @new_docs, $new_guy;
     }
-    
   }
   my $conflicts = 0; 
   if ( $generation %10 == 0 )  {
@@ -107,14 +106,13 @@ do {
 			       descending => 'true' );
     
     for my $p ( @{$view->{'rows'}} ) {
-      push( @population, $p->{'id'});
       $fitness_of{ $p->{'id'} } =  $p->{'key'};
     }
     
-    @population = 
+  }
+  @population = 
       nkeytop { $fitness_of{ $_} } -$sofea_conf->{'initial_population'}
 	=> keys %fitness_of;
-  }
   $generation++;
 } until ($solution_found->{'data'}->{'found'} ne '0');
 $logger->log( {Finished => $total_conflicts}, 1);
