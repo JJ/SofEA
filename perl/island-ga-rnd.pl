@@ -52,14 +52,14 @@ for (my $i = 0; $i < $sofea_conf->{'initial_population'}; $i++) {
 }
 
 #Start EA
+my $generation = 0;
 do {
 
   my $this_population_size = scalar @population;
-  my $fitness_of_worst = 0;
+  my $fitness_of_worst = $fitness_of{$population[$#population]};
   my @pool = $get_pool->( \@population, \%fitness_of, $this_population_size );
   my @new_population  = produce_offspring( \@pool, $this_population_size );
   
-  my %new_guys;
   my @new_docs;
   for my $p (@new_population ) {
     
@@ -68,7 +68,7 @@ do {
 	$best_so_far = $p;
 	$best_fitness = $fitness;
       }
-    $fitness_of{ $p } = $new_guys{$p} = $fitness;
+    $fitness_of{ $p } = $fitness;
     
     if ( $fitness  >= $sofea_conf->{'chromosome_length'}  ) {
       print "Solution found \n\n";
@@ -83,22 +83,24 @@ do {
     }
     
   }
-
-  my $response = $db->bulkStore( \@new_docs );
   my $conflicts = 0; 
-  map( (defined $_->{'error'})?$conflicts++:undef, @$response );
+  if ( $generation %10 == 0 )  {
+    my $response = $db->bulkStore( \@new_docs );
+    map( (defined $_->{'error'})?$conflicts++:undef, @$response );
+  }
   $logger->log( { conflicts => $conflicts,
 		  population => scalar @population,
 		  best => $best_so_far,
 		  fitness => $best_fitness,
 		  new_docs => scalar( @new_docs )} );
   $total_conflicts += $conflicts;
-
+  
   my $solution_doc = $db->newDoc('solution');  
   eval {
     $solution_found = $solution_doc->retrieve;
   };
-  if ($solution_found->{'data'}->{'found'} eq '0' ) {
+  if (($generation %10 == 0 ) 
+      && ( $solution_found->{'data'}->{'found'} eq '0' ) ) {
     #Make request and put it into the population
     my $view = $by->queryView( "fitness_null", 
 			       limit=> int($population_size/(1+rand(3))),
@@ -113,6 +115,7 @@ do {
       nkeytop { $fitness_of{ $_} } -$sofea_conf->{'initial_population'}
 	=> keys %fitness_of;
   }
+  $generation++;
 } until ($solution_found->{'data'}->{'found'} ne '0');
 $logger->log( {Finished => $total_conflicts}, 1);
 $logger->close;

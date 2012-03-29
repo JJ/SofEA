@@ -1,3 +1,8 @@
+2012-03-29  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* island-ga-rnd.pl: Putting back individuals only after ten
+	generations, to increase concurrency. 
+
 2012-03-20  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
 	* run-elite-ga-rnd-iris.sh: Made experiment with real-life
