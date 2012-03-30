@@ -24,7 +24,6 @@ $sofea_conf ->{'id'} = "repro-".$sofea_conf ->{'id'};
 my $logger = new Log::YAMLLogger $sofea_conf;
 
 my $population_size = $sofea_conf->{'repro_pop_size'};
-my $max_evaluations = $sofea_conf->{'max_evaluations'};
 
 #Create design docs
 my $rev = $db->newDesignDoc('_design/rev')->retrieve;
@@ -53,7 +52,6 @@ do {
     push( @population, $p->{'id'});
     $fitness_of{ $p->{'id'} } =  $p->{'value'}{'fitness'};
   }
-    
   my @old_guys_sorted = nkeysort { $fitness_of{ $_ }} @population;
   my @new_docs;
   my $new_guy;

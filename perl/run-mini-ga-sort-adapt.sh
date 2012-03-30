@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ../js;./deploy.sh;cd ../perl
+
 if [ -z "$1" ]
 then 
     BASE="base"
