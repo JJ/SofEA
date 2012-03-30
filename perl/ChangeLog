@@ -1,5 +1,95 @@
 2012-03-29  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
 
+	* island.pl: New tests with l=256
+real	3m1.556s
+user	1m6.810s
+sys	0m4.150s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i256-r8-roul-g25-l256-c1-r30
+
+	
+real	2m38.267s
+user	1m35.500s
+sys	0m5.240s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i128-r8-roul-g25-l256-c2-r30
+
+	real	2m26.119s
+user	2m35.010s
+sys	0m7.770s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i64-r8-roul-g25-l256-c4-r30
+
+	real	2m40.546s
+user	4m33.180s
+sys	0m13.450s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i32-r8-roul-g25-l256-c8-r30
+
+	
+	* PPSN/island-i32-r8-roul-g25-c5-r30/repro-i-i32-r8-roul-2012-03-29T18:28:56-1.yaml
+	(generation): 
+
+	real	2m29.480s
+user	0m49.110s
+sys	0m3.780s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i256-r8-roul-g25-l200-c1-r30
+
+	real	2m18.751s
+user	1m14.030s
+sys	0m4.790s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i128-r8-roul-g25-l200-c2-r30/
+
+	real	2m7.796s
+user	2m4.570s
+sys	0m8.130s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i64-r8-roul-g25-l200-c4-r30/
+real	2m1.695s
+user	3m37.550s
+sys	0m11.370s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+End Reproducer
+End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i32-r8-roul-g25-l200-c8-r30/
+
+	real	1m55.720s
+user	3m17.570s
+sys	0m11.200s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i32-r8-roul-g25-c5-r30
+	
+	eal	1m51.891s
+user	1m37.290s
+sys	0m6.840s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i64-r8-roul-g25-c5-r30
+
+	real	1m57.675s
+user	0m50.740s
+sys	0m4.440s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i128-r8-roul-g25-c2-r30
+
+	real	2m8.508s
+user	0m36.640s
+sys	0m3.440s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i256-r8-roul-g25-c1-r30
+
 	* island-ga-rnd.pl: Putting back individuals only after ten
 	generations, to increase concurrency. 
 

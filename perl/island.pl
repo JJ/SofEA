@@ -108,6 +108,7 @@ do {
   }
   $generation++;
 } until ($solution_found->{'data'}->{'found'} ne '0');
+$logger->log( {generation => $generation}, 1);
 $logger->close;
 print "End Reproducer\n";
 
