@@ -4,7 +4,8 @@ times.dis.96 <- read.table('times-dis-96.dat')
 times.base <- read.table('../GECCO/time-ip128-e16-r64.dat')
 boxplot( times.base$V1,
         times.dis$V1,   times.dis.a8$V1,   times.dis.96$V1,
-        main='SofEA 1, Running time',  sub='Diverse block size',
+        main='SofEA 1, Time to Solution',  sub='Diverse block size and number of clients',
         xlab='Configuration',
-        ylab='# Evaluations' )
-axis(1,at=c(1:4),labels =c('SofEA0', '64,32,16', '96,64,32,16', '64,32,16,8' ))
+        ylab='Time (s)' )
+axis(1,at=c(1:4),mgp=c(5,2,0),
+     labels =c('SofEA0', 'r64+r32+r16', 'r96+r64\n+r32+r16', 'r64+r32\n+r16+r8' ))

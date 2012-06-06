@@ -9,7 +9,7 @@ boxplot( times.base$V1,
         times.i64.p128.r64.R1$V1, times.i64.p128.r64.R2$V1,
         times.i64.p128.r32.R3$V1, times.i64.p128.r32.R4$V1,
         times.i64.p128.r16.R5$V1, times.i64.p128.r16.R6$V1,
-        main='SofEA 1, Running time',  sub='Initial pop = 64',
+        main='SofEA 1, Time to Solution',  sub='Initial pop = 64, population = 128',
         xlab='Configuration',
-        ylab='Time to solution (s)' )
+        ylab='Time (s)' )
 axis(1,at=c(1:7),labels =c('SofEA0','r64R1', 'r64R2', 'r32R3', 'r32R4','r16R5', 'r16R6' ))

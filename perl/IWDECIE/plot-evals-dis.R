@@ -4,7 +4,7 @@ evals.dis.96 <- read.table('evals-dis-96.dat')
 evals.base <- read.table('../GECCO/evals-ip128-e16-r64.dat')
 boxplot( evals.base$V1,
         evals.dis$V1,   evals.dis.a8$V1,   evals.dis.96$V1,
-        main='SofEA 1, Running time',  sub='Diverse block size',
+        main='SofEA 1, Evaluations to solution',  sub='Diverse block size',
         xlab='Configuration',
         ylab='# Evaluations' )
-axis(1,at=c(1:4),labels =c('SofEA0', '64,32,16', '96,64,32,16', '64,32,16,8' ))
+axis(1,at=c(1:4),labels =c('SofEA0', 'r64+r32+r16', 'r96+r64+r32+r16', 'r64+32+r16r8' ))
