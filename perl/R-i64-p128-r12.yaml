@@ -1,0 +1,9 @@
+
+---
+id: R-i64-p128-r12
+initial_population: 64
+chromosome_length: 128
+base_population: 128
+repro_pop_size: 12
+max_evaluations: 5000
+reaper_delay: 1

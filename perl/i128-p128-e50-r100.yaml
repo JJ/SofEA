@@ -1,0 +1,10 @@
+
+---
+id: p128-e50-r100
+initial_population: 128
+chromosome_length: 128
+base_population: 128
+eval_pop_size: 50
+repro_pop_size: 100
+max_evaluations: 5000
+reaper_delay: 1

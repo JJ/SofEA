@@ -1,0 +1,10 @@
+
+---
+id: i1024-p128-er64
+initial_population: 1024
+chromosome_length: 128
+base_population: 128
+eval_pop_size: 64
+repro_pop_size: 64
+max_evaluations: 5000
+reaper_delay: 1

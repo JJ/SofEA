@@ -1,0 +1,415 @@
+2012-06-07  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* ../js/monitor.js: A new script to count the population,
+	requested by reviewer.
+
+2012-03-29  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* island.pl: New tests with l=256
+real	3m1.556s
+user	1m6.810s
+sys	0m4.150s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i256-r8-roul-g25-l256-c1-r30
+
+	
+real	2m38.267s
+user	1m35.500s
+sys	0m5.240s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i128-r8-roul-g25-l256-c2-r30
+
+	real	2m26.119s
+user	2m35.010s
+sys	0m7.770s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i64-r8-roul-g25-l256-c4-r30
+
+	real	2m40.546s
+user	4m33.180s
+sys	0m13.450s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i32-r8-roul-g25-l256-c8-r30
+
+	
+	* PPSN/island-i32-r8-roul-g25-c5-r30/repro-i-i32-r8-roul-2012-03-29T18:28:56-1.yaml
+	(generation): 
+
+	real	2m29.480s
+user	0m49.110s
+sys	0m3.780s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i256-r8-roul-g25-l200-c1-r30
+
+	real	2m18.751s
+user	1m14.030s
+sys	0m4.790s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i128-r8-roul-g25-l200-c2-r30/
+
+	real	2m7.796s
+user	2m4.570s
+sys	0m8.130s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i64-r8-roul-g25-l200-c4-r30/
+real	2m1.695s
+user	3m37.550s
+sys	0m11.370s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+End Reproducer
+End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i32-r8-roul-g25-l200-c8-r30/
+
+	real	1m55.720s
+user	3m17.570s
+sys	0m11.200s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i32-r8-roul-g25-c5-r30
+	
+	eal	1m51.891s
+user	1m37.290s
+sys	0m6.840s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i64-r8-roul-g25-c5-r30
+
+	real	1m57.675s
+user	0m50.740s
+sys	0m4.440s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir
+	PPSN/island-i128-r8-roul-g25-c2-r30
+
+	real	2m8.508s
+user	0m36.640s
+sys	0m3.440s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/island-i256-r8-roul-g25-c1-r30
+
+	* island-ga-rnd.pl: Putting back individuals only after ten
+	generations, to increase concurrency. 
+
+2012-03-20  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-elite-ga-rnd-iris.sh: Made experiment with real-life
+	Internet server: 
+	real	28m7.152s
+user	0m32.620s
+sys	0m3.310s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ time ./run-elite-ga-rnd-iris.sh e-ir128 2 3
+
+	Latency really sucks. It's 60 times slower than local. 
+
+	* elite-ga-rnd.pl: Testing with division of population size up to 16.
+
+2012-03-19  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* elite-ga-rnd.pl: Fixing an error: full population was generated,
+	not only the population size that was retrieved. New individuals
+	were also created with "old" format, not new one.
+
+	* run-elite-ga-rnd.sh: Testing with reduction of chromosome
+	representation to chromosome and fitness, to reduce overhead. 
+
+	* elite-ga-rnd.pl: 
+	real	1m29.829s
+user	0m46.160s
+sys	0m3.210s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/rnd-e-ir64-c4
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mv repro-e-ir* PPSN/rnd-e-ir64-c4/
+
+	Does not degrade with new clients. Problems: very fast
+
+	* run-elite-ga-rnd.sh: Testing new
+
+	* elite-ga.pl: New version of this program adding to the
+	population only those better than the worst of the old population 
+	This obtains the best results so far. Let's see how they scale.
+	real	1m37.484s
+user	0m30.950s
+sys	0m2.270s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ time ./run-elite-ga.sh e-ir64 2 10
+
+real	1m44.816s
+user	0m43.810s
+sys	0m3.380s
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ Solution found 
+
+End Reproducer
+
+jmerelo@penny:~/proyectos/SofEA/trunk/perl$ mkdir PPSN/e-ir64-c3-v2
+
+	Problem is at this speed they are pretty much synchronized and
+	then working on the same population. 
+	
+2012-02-22  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-p-peaks-w256.sh: Continuing change of 64 clients by
+	128. First result was very good.
+
+	* run-p-peaks-dis.sh (BASE): First test "dis" included 256, 128
+	and 64. Second added 32. Third includes 2 of each : 128, 64,
+	32. Really, I should use this more often... This one yields worst
+	results ever. 
+	(BASE): One of the 128 is changed to 256. Seems like bigger
+	populations work better ,
+
+2012-01-28  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* evaluate-pop-loop-until-found.pl: Testing with the new "int"
+	random generator, that ensures that, from time to time, the random
+	number generated is 0.
+
+	* My/Couch.pm (db): Adding an int_rnd function for avoiding
+	leaving those with the lower rnd number alone.
+
+	* evaluate-pop-loop-until-found.pl: Starting new experiments with
+	e64 r64, e1r1. Labeling experiments with this new configuration
+	with "new".
+
+	* reproduce-pop-loop-until-found.pl: First change post-GECCO:
+	changing the random range in the same way that we did for the
+	evaluator, using only the equivalent fraction of the base
+	population. 
+
+2012-01-25  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* reproduce-pop-loop-until-found.pl: Key seems to be in the
+	population used by the reproducer, which was not taken into
+	account until now. Let's check it.
+
+2012-01-23  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-until-found-par-with-greedy-eval.sh: Testing with a new
+	greedy evaluator, which evaluates all individuals available. Very
+	good results, best so far. Let's see how it paralellizes. 
+
+2012-01-22  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* evaluate-pop-loop-until-found.pl: Changes in how random number
+	used to retrieve population are generated. Instead of using the
+	whole range, which resulted in generating too high numbers that
+	caused the evaluator to retrieve less, now the range is 1 less the
+	the evaluation pop size divided by the base population size. That
+	way, it is more likely that if the number of individuals retrieved
+	is less than the packet size, it's due to lack of individuals to
+	evaluate, and not to generating numbers too high to retrieve a
+	good amount of individuals. 
+
+2012-01-10  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* extract-evals.pl: Adapted this old script to extract the number
+	of evaluations from the number of deleted + base population. There
+	might be a few over that, but I expect it should be pretty much
+	the same for all (or a random variable).
+
+	* run-until-found-par.sh: With 2 reproducers and 6 evaluators,
+	even better:
+
+	real	9m7.691s
+user	6m7.770s
+sys	0m31.830s
+
+	If reproducers' packet size is 32, good results too
+
+	real	10m6.620s
+user	4m59.210s
+sys	0m26.550s
+
+	With 2 eval clients, 1 repro:
+	
+	real	12m27.632s
+user	6m3.410s
+sys	0m33.040s
+
+	So we really see a speed up (or rather speed-down)
+
+2012-01-09  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* i128-p128-e16-r64.yaml (id): And we eventually hit the jackpot:
+	real	10m9.683s
+user	6m3.060s
+sys	0m31.470s
+(repro_pop_size): We were just lucky... packet size for repro was
+	16. Let's try with the original, to see what happens.
+	(max_evaluations): I really hit the jackpot. With what I _really_
+	intended to do, results are
+
+	real	17m10.411s
+user	6m35.180s
+sys	0m35.960s
+
+	(pretty good, anyways)
+
+	with a single reproducer packet size 16 and 4 evaluation clients. Bingo!
+	
+
+	* i128-p128-er16.yaml (id): Best results so far, real improvement:
+
+	2 clients
+	real	20m12.599s
+user	8m50.880s
+sys	0m50.110s
+
+	4 clients
+	real	19m6.069s
+user	8m31.350s
+sys	0m46.620s
+
+	6 clients
+	real	17m59.149s
+user	8m20.500s
+sys	0m43.570s
+
+	Fail for more clients:
+	real	22m38.494s
+user	9m46.120s
+sys	0m52.270s
+
+	But does not get much worse 
+	 for 5
+	real	22m34.139s
+user	11m0.850s
+sys	0m55.210s
+
+
+
+	* i128-p128-er32.yaml (id): Trying with this one. It could take
+	longer, but let's try anyways. Two clients: 
+real	18m5.840s
+user	6m24.460s
+sys	0m36.430s
+Second one, 4 clients.
+	real	18m21.971s
+user	6m9.440s
+sys	0m35.500s
+
+	6 clients
+	
+	real	21m48.571s
+user	7m7.990s
+sys	0m38.130s
+
+	Hum, not good...
+
+
+	* i256-p128-e64-r64.yaml (id): Starting a new set of experiments
+	with the same packet size and increasing number of clients, and
+	restarting database at the beginning of each set of experiments. 
+
+	2 clients
+	real	18m11.561s
+user	4m57.320s
+sys	0m27.870s
+
+	4 clients
+	real	21m33.087s
+user	5m45.210s
+sys	0m31.280s
+
+	Similar, but we'll have to see why is that.
+	And finally, 6 clients
+	real	26m6.280s
+user	6m39.130s
+sys	0m35.820s
+
+	This is definitely not working. Problem might be it reaches the
+	"population" before it has any chance to reproduce, making it too
+	greedy. Or since the population is too small, they are generating
+	lots of conflicts. Let's try with a smaller packet size.
+
+2012-01-08  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* reproduce-pop-loop-until-found.pl: Testing now with new
+	non-buggy version. 3 minutes, on average.
+
+	* run-until-found-prof.sh: Now checking with profilers to identify
+	bottlenecks. 
+	Computing evaluations in reproduce (which was needed only for
+	statistics was one of the bottlenecks).
+
+	* run-until-found.sh: Tested without the checks for non-chromosome
+	docs (solution and iterations). It improves a bit, from 3 minutes
+	to 
+	real	2m44.697s
+user	0m17.300s
+sys	0m1.990s
+
+(single iteratio, but still...)
+	Now checking without parsing to Float in fitness view. For some
+	reason, fitness stringified in one iteration which made me add it.
+
+	Without the "parseFloat", result is pretty much the same
+	real	2m56.050s
+user	0m18.730s
+sys	0m2.180s
+
+	But now it's difficult to say, because teh number of chromosomes
+	could have been different.
+	* ../js/rev/views/rev1/map.js: Taking "ifs" of to avoid (big)
+	decrease in speed. 
+
+2012-01-07  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* run-until-found-par-repro.sh: Trying again with parallel
+	reproducer to start, due to high amount of "sleeps" in the single
+	evaluator. 
+	A small improvement over the other:
+	real	26m11.944s
+user	3m1.330s
+sys	0m18.630s
+
+	Should be expected, since the only thing done is to improve
+	"Sleep" periods for evaluators.
+
+	* i128-p128-er100.yaml (reaper_delay): Repeating experiments with
+	new method to find whether the solution has been found or not. It
+	failed before, evaluators kept running until a solution was found.
+
+	* run-until-found-par-all.sh: 
+	real	12m15.566s
+user	2m11.740s
+sys	0m13.830s
+
+	Big improvement with parallel evaluation. TEsting parallel both.
+
+	* run-until-found-par-eval.sh: Second run, after fixing errors,
+	worse results: 
+	real	19m27.256s
+user	2m43.240s
+sys	0m16.150s
+
+	Well, user is much smaller, but wall clock is what counts...
+
+	* run-until-found.sh: First run with p128, blocksize 100 results:
+	real	17m52.632s
+user	7m37.530s
+sys	0m49.720s
+
+	Several bug fixes on the fly, one of them made reaper not delay
+	after none was eliminated. 
+
+2011-11-26  Juan J. Merelo Guervós  <jjmerelo@gmail.com>
+
+	* Running again experiments, I made a msitake and put two
+	reproducers (which were mainly hungry) instead of two
+	evaluators. Took less time, but obtained a max fitness of 90 or
+	so. 
+
+	* evaluate-pop-loop.pl: Changed evaluate to start with rand(), to
+	avoid problems. 
+
+	* base.yaml (base_population): Setting base population to 128 for
+	the first set of experiments.
+

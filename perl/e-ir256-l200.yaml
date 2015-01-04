@@ -1,0 +1,7 @@
+
+---
+id: e-ir256
+initial_population: 256
+chromosome_length: 200
+repro_pop_size: 256
+

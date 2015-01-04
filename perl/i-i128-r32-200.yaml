@@ -1,0 +1,7 @@
+
+---
+id: i-i128-r32-l200
+initial_population: 128
+chromosome_length: 200
+repro_pop_size: 32
+

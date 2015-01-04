@@ -1,0 +1,10 @@
+
+---
+id: i512-p128-e64-r96
+initial_population: 512
+chromosome_length: 128
+base_population: 128
+eval_pop_size: 64
+repro_pop_size: 96
+max_evaluations: 5000
+reaper_delay: 1

@@ -1,0 +1,10 @@
+
+---
+id: ip256-e32-r64
+initial_population: 128
+chromosome_length: 128
+base_population: 256
+eval_pop_size: 32
+repro_pop_size: 64
+max_evaluations: 5000
+reaper_delay: 1

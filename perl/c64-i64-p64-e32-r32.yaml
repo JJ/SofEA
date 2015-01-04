@@ -1,0 +1,10 @@
+
+---
+id: test
+initial_population: 64
+chromosome_length: 64
+base_population: 64
+eval_pop_size: 32
+repro_pop_size: 32
+max_evaluations: 5000
+reaper_delay: 1
