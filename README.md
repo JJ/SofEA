@@ -1,3 +1,5 @@
+#SofEA, a evolutionary algorithm for CouchDB
+
 Installing this is not straighforward, but it can be done. You'll have to install
 * Couchdb
 * Couchapp, for using the deploy.sh shell script in js
